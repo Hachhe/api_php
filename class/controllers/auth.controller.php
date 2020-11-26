@@ -24,7 +24,7 @@ class AuthController {
             return $resp->error_200("Las credenciales no coinciden");
         }
 
-        return $Auth::SignIn($dataUserLogin);
+        return Auth::SignIn($dataUserLogin);
     }
 }
 
