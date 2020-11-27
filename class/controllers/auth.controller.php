@@ -33,7 +33,6 @@ class AuthController {
             );
             return $result;
         }{
-            Auth::Check($token);
             return $resp->error_500("Error interno, token no guardado");
         }
     }

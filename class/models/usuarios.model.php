@@ -2,6 +2,7 @@
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
 require_once 'utils/encript.php';
+require_once 'auth.clases.php';
 
 // MODELO POST- CRUD
 
@@ -24,16 +25,36 @@ class UsuarioModel extends Connection {
 
     public function getAll($inicio, $cantidad){
         $conexion = new connection;
-        $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
-        $data = $conexion->obtenerDatos($query);
-        return (isset($data[0])) ? $data : 0;
+        $headers = apache_request_headers();
+
+        if(isset($headers['token'])){
+           $token = $headers['token'];
+             if(Auth::Check($token)){
+            $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
+            $data = $conexion->obtenerDatos($query);
+            return (isset($data[0])) ? $data : 0;
+            }else
+             return 0;
+       }else{
+         return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
+       }
     }
 
     public function getById($id){
         $conexion = new connection;
-        $query = "SELECT * from " . $this->table. " WHERE id='$id'";
-        $data = $conexion->obtenerDatos($query);
-        return (isset($data[0])) ? $data : 0;
+        $headers = apache_request_headers();
+
+        if(isset($headers['token'])){
+           $token = $headers['token'];
+             if(Auth::Check($token)){
+                $query = "SELECT * from " . $this->table. " WHERE id='$id'";
+                $data = $conexion->obtenerDatos($query);
+                return (isset($data[0])) ? $data : 0;
+            }else
+             return 0;
+       }else{
+         return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
+       } 
     }
 
     public function Enviar($datos){
@@ -45,19 +66,20 @@ class UsuarioModel extends Connection {
         if(isset($datos["mobile"])){$this->mobile = $datos["mobile"];};
         $this->password=encriptar($datos["password"]);
         $this->rol_id=$datos["rol_id"];
-                    
-    $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, created_At) 
-    values
-    ('".$this->nombre."','".
-    $this->apellido."','".
-    $this->email."','".
-    $this->mobile."','".
-    $this->password."','".
-    $this->rol_id."','".
-    $this->created_At."')";
-    $data=$conexion->nonQueryId($query);
-    print_r($query);
-    return (($data) ?  $data :  0);
+
+      $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, created_At) 
+      values
+      ('".$this->nombre."','".
+         $this->apellido."','".
+         $this->email."','".
+         $this->mobile."','".
+         $this->password."','".
+         $this->rol_id."','".
+         $this->created_At."')";
+         $data=$conexion->nonQueryId($query);
+         print_r($query);
+
+      return (($data) ?  $data :  0);
     }
 
     public function Actualizar($datos){
@@ -70,20 +92,38 @@ class UsuarioModel extends Connection {
         if(isset($datos["mobile"])){$this->mobile = $datos["mobile"];};
         if(isset($datos["password"])){ $this->password = $datos["password"];};
         if(isset($datos["rol_id"])){$this->rol_id = $datos["rol_id"];};
-    
-    $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
-    $data=$conexion->nonQuery($query);
-    return (($data>=1) ?  $data :  0); 
+        $headers = apache_request_headers();
+
+        if(isset($headers['token'])){
+           $token = $headers['token'];
+             if(Auth::Check($token)){
+                $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
+                $data=$conexion->nonQuery($query);
+                return (($data>=1) ?  $data :  0);
+            }else
+             return 0;
+       }else{
+         return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
+       }  
     }
 
     public function Eliminar($datos){
         $conexion = new connection;    
         $this->id = $datos["id"];
-    $query = "DELETE FROM " . $this->table . " WHERE id='".$this->id."'";
-    print_r($query);
-    $data=$conexion->nonQuery($query);
-    return (($data>=1) ?  $data :  0); 
-    
+        $headers = apache_request_headers();
+
+        if(isset($headers['token'])){
+           $token = $headers['token'];
+             if(Auth::Check($token)){
+                $query = "DELETE FROM " . $this->table . " WHERE id='".$this->id."'";
+                print_r($query);
+                $data=$conexion->nonQuery($query);
+                return (($data>=1) ?  $data :  0); 
+            }else
+             return 0;
+       }else{
+         return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
+       }  
     }
 
 }

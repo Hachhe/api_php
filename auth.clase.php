@@ -9,11 +9,14 @@ class Auth
     private static $secret_key = 'Sdw1s9x8@';
     private static $encrypt = ['HS256'];
     private static $aud = null;
+    public  static $leeway = 0 ;
+    public  static  $timestamp = null ;
     
     public static function SignIn($data)
     {
         $time = time();
-        
+        $timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
+
         $token = array(
             'exp' => $time + (60*60),
             'aud' => self::Aud(),
@@ -40,6 +43,12 @@ class Auth
         {
             throw new Exception("Invalid user logged in.");
         }
+
+        if (isset($token->exp) && ($timestamp - static::$leeway) >= $token->exp) {
+            throw new Exception('Expired token');   
+        }
+
+        return $decode;
     }
     
     public static function GetData($token)
