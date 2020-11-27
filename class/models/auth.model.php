@@ -23,11 +23,9 @@ class AuthModel{
         
         $data = $connection->obtenerDatos($query);
 
-        if(isset($data[0]['id'])){
-            return $data[0];
-        }else {
-            return 0;
-        }
+
+        return (isset($data[0]['id'])) ? $data[0] : 0;
+
     }
 }
 

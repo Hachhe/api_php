@@ -1,6 +1,7 @@
 <?php
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
+require_once 'utils/encript.php';
 
 // MODELO POST- CRUD
 
@@ -14,10 +15,11 @@ class UsuarioModel extends Connection {
         private $mobile="";
         private $password="";
         private $rol_id="";
-        // no sé como iniciarlo private $createdAt="";
+        private $created_At="";
     
 
         function __construct(){
+            $this->created_At=date("Y-m-d H:i:s");
         }
 
     public function getAll($inicio, $cantidad){
@@ -41,17 +43,18 @@ class UsuarioModel extends Connection {
         $this->apellido=$datos["apellido"];
         $this->email=$datos["email"];
         if(isset($datos["mobile"])){$this->mobile = $datos["mobile"];};
-        $this->password=$datos["password"];
+        $this->password=encriptar($datos["password"]);
         $this->rol_id=$datos["rol_id"];
                     
-    $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id) 
+    $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, created_At) 
     values
     ('".$this->nombre."','".
     $this->apellido."','".
     $this->email."','".
     $this->mobile."','".
     $this->password."','".
-    $this->rol_id."')";
+    $this->rol_id."','".
+    $this->created_At."')";
     $data=$conexion->nonQueryId($query);
     print_r($query);
     return (($data) ?  $data :  0);
@@ -68,7 +71,7 @@ class UsuarioModel extends Connection {
         if(isset($datos["password"])){ $this->password = $datos["password"];};
         if(isset($datos["rol_id"])){$this->rol_id = $datos["rol_id"];};
     
-    $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."' WHERE id='".$this->id."'";
+    $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
     $data=$conexion->nonQuery($query);
     return (($data>=1) ?  $data :  0); 
     }

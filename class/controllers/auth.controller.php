@@ -17,14 +17,25 @@ class AuthController {
         $model = new AuthModel();
         $dataUserLogin = $model->login($data);
 
-        if(!isset($dataUserLogin)){
+        if(!isset($dataUserLogin['email'])){
             return $resp->error_200("No existe usuario con correo: ".$data['email']);
         }
-        if(!(($data['password']) == $dataUserLogin['password'])){
+        if(!((encriptar($data['password'])) == $dataUserLogin['password'])){
             return $resp->error_200("Las credenciales no coinciden");
         }
 
-        return Auth::SignIn($dataUserLogin);
+        $token  = Auth::SignIn($dataUserLogin);
+
+        if($token){
+            $result = $resp->response;
+            $result['result']= array(
+                "token" => $token
+            );
+            return $result;
+        }{
+            Auth::Check($token);
+            return $resp->error_500("Error interno, token no guardado");
+        }
     }
 }
 

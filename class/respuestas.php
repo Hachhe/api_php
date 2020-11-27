@@ -55,6 +55,5 @@ class Respuestas{
         return $this->response;
     }
 
-
 }
 

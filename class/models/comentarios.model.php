@@ -12,10 +12,11 @@ class ComentarioModel extends Connection {
         private $titulo="";
         private $descripcion="";
         private $estado="";
-        // no sé como iniciarlo private $createdAt="";
+        private $createdAt="";
     
 
         function __construct(){
+            $this->createdAt=date("Y-m-d H:i");
         }
 
     public function getAll($inicio, $cantidad){
@@ -39,13 +40,15 @@ class ComentarioModel extends Connection {
             $this->titulo = $datos["titulo"];
             $this->descripcion = $datos["descripcion"];
             $this->estado = $datos["estado"];
+            $this->createdAt= $datos["createdAt"];
     
-    $query = "INSERT INTO " . $this->table . "(post_id,titulo, descripcion, estado) 
+    $query = "INSERT INTO " . $this->table . "(post_id,titulo, descripcion, estado, createdAt) 
     values
     ('".$this->post_id."','".
     $this->titulo."','".
     $this->descripcion."','".
-    $this->estado."')";
+    $this->estado."','".
+    $this->createdAt."')";
     $data=$conexion->nonQueryId($query);
     return (($data) ?  $data :  0);
     }
@@ -58,8 +61,9 @@ class ComentarioModel extends Connection {
         if(isset($datos["titulo"])){$this->titulo = $datos["titulo"];};
         if(isset($datos["descripcion"])){$this->descripcion = $datos["descripcion"];};
         if(isset($datos["estado"])){ $this->estado = $datos["estado"];};
+        if(isset($datos["createdAt"])){$this->createdAt = $datos["createdAt"];};
     
-    $query = "UPDATE " . $this->table . " SET post_id='".$this->post_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."' WHERE id='".$this->id."'";
+    $query = "UPDATE " . $this->table . " SET post_id='".$this->post_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', createdAt='".$this->createdAt."' WHERE id='".$this->id."'";
     $data=$conexion->nonQuery($query);
     return (($data>=1) ?  $data :  0); 
     }

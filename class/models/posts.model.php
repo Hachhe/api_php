@@ -13,10 +13,11 @@ class PostModel extends Connection {
         private $descripcion="";
         private $estado="";
         private $categoria_id="";
-        // no sé como iniciarlo private $createdAt="";
+        private $created_At="";
     
 
         function __construct(){
+            $this->created_At=date("Y-m-d H:i:s");
         }
 
     public function getAll($inicio, $cantidad){
@@ -42,13 +43,14 @@ class PostModel extends Connection {
             $this->estado = $datos["estado"];
             $this->categoria_id = $datos["categoria_id"];
     
-    $query = "INSERT INTO " . $this->table . "(usuario_id,titulo, descripcion, estado,categoria_id) 
+    $query = "INSERT INTO " . $this->table . "(usuario_id,titulo, descripcion, estado,categoria_id, created_At) 
     values
     ('".$this->usuario_id."','".
     $this->titulo."','".
     $this->descripcion."','".
     $this->estado."','".
-    $this->categoria_id."')";
+    $this->categoria_id."','".
+    $this->created_At."')";
     $data=$conexion->nonQueryId($query);
     return (($data) ?  $data :  0);
     }
@@ -63,7 +65,7 @@ class PostModel extends Connection {
         if(isset($datos["estado"])){ $this->estado = $datos["estado"];};
         if(isset($datos["categoria_id"])){$this->categoria_id = $datos["categoria_id"];};
     
-    $query = "UPDATE " . $this->table . " SET usuario_id='".$this->usuario_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', categoria_id='".$this->categoria_id."' WHERE id='".$this->id."'";
+    $query = "UPDATE " . $this->table . " SET usuario_id='".$this->usuario_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', categoria_id='".$this->categoria_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
     $data=$conexion->nonQuery($query);
     return (($data>=1) ?  $data :  0); 
     }
