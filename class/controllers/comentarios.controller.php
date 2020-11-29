@@ -1,8 +1,8 @@
 <?php
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
-require_once './class/models/auth.model.php';
 require_once './class/models/comentarios.model.php';
+require_once './class/models/auth.model.php';
 
 class ComentariosController extends Connection{
 

@@ -1,13 +1,15 @@
 <?php
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
-
+require_once 'auth.clase.php';
 require_once './class/models/posts.model.php';
 
 // MODELO POST- CRUD
 
 class PostModel extends Connection {
     private $table = "posts";
+    private $categorias = "categorias";
+    private $usuarios = "usuarios";
     
         private $id="";
         private $usuario_id="";
@@ -30,9 +32,13 @@ class PostModel extends Connection {
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-             $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
+             $query = "
+             SELECT * from " . $this->table."
+             JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
+             JOIN ".$this->categorias." ON ". $this->table.".categoria_id=". $this->categorias.".id
+            limit $inicio, $cantidad";
              $data = $conexion->obtenerDatos($query);
-                   return (isset($data[0])) ? $data : 0;
+            return (isset($data[0])) ? $data : 0;
             }else
                 return 0;
         }else{
@@ -43,12 +49,18 @@ class PostModel extends Connection {
     public function getById($id){
         $conexion = new connection;
         $headers = apache_request_headers();
-
+        
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-                $query = "SELECT * from " . $this->table. " WHERE id='$id'";
+                $query = "
+                SELECT * from " . $this->table."
+                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
+                JOIN ".$this->categorias." ON ". $this->table.".categoria_id=". $this->categorias.".id
+                WHERE ". $this->table.".id='$id'";
+                print_r($query);
                 $data = $conexion->obtenerDatos($query);
+                $data[0]["id"] = $id;
                 return (isset($data[0])) ? $data : 0;
             }else
                 return 0;

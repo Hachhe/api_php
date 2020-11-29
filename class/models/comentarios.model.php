@@ -1,18 +1,18 @@
 <?php
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
-require_once 'auth.clases.php';
+require_once 'auth.clase.php';
 
 // MODELO POST- CRUD
 
 class ComentarioModel extends Connection {
     private $table = "comentarios";
+    private $usuarios = "usuarios";
     
         private $id="";
         private $post_id="";
-        private $titulo="";
-        private $descripcion="";
-        private $estado="";
+        private $usuario_id="";
+        private $comentario="";
         private $createdAt="";
     
 
@@ -27,8 +27,12 @@ class ComentarioModel extends Connection {
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-                $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
+                $query = 
+                "SELECT * from " . $this->table."
+                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
+                 limit $inicio, $cantidad";
                 $data = $conexion->obtenerDatos($query);
+                print_r($query);
                 return (isset($data[0])) ? $data : 0;
             }else
                 return 0;
@@ -43,8 +47,12 @@ class ComentarioModel extends Connection {
         if(isset($headers['token'])){
             $token = $headers['token'];
               if(Auth::Check($token)){
-                $query = "SELECT * from " . $this->table. " WHERE id='$id'";
+                $query= 
+                "SELECT * from " . $this->table."
+                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id".
+                " WHERE ". $this->table.".id='$id'";
                 $data = $conexion->obtenerDatos($query);
+                print_r($query);
                 return (isset($data[0])) ? $data : 0;
               }else
                   return 0;
@@ -57,9 +65,8 @@ class ComentarioModel extends Connection {
         $conexion = new connection;
         
             $this->post_id = $datos["post_id"];
-            $this->titulo = $datos["titulo"];
-            $this->descripcion = $datos["descripcion"];
-            $this->estado = $datos["estado"];
+            $this->usuario_id = $datos["usuario_id"];
+            $this->comentario = $datos["comentario"];
             $this->createdAt= $datos["createdAt"];
 
         $headers = apache_request_headers();
@@ -67,12 +74,11 @@ class ComentarioModel extends Connection {
          if(isset($headers['token'])){
             $token = $headers['token'];
               if(Auth::Check($token)){
-                $query = "INSERT INTO " . $this->table . "(post_id,titulo, descripcion, estado, createdAt) 
+                $query = "INSERT INTO " . $this->table . "(post_id, usuario_id ,comentario, createdAt) 
                 values
                 ('".$this->post_id."','".
-                $this->titulo."','".
-                $this->descripcion."','".
-                $this->estado."','".
+                $this->usuario_id."','".
+                $this->comentario."','".
                 $this->createdAt."')";
                 $data=$conexion->nonQueryId($query);
                 return (($data) ?  $data :  0);
@@ -88,9 +94,8 @@ class ComentarioModel extends Connection {
         
         $this->id = $datos["id"];
         if(isset($datos["post_id"])){$this->post_id = $datos["post_id"];};
-        if(isset($datos["titulo"])){$this->titulo = $datos["titulo"];};
-        if(isset($datos["descripcion"])){$this->descripcion = $datos["descripcion"];};
-        if(isset($datos["estado"])){ $this->estado = $datos["estado"];};
+        if(isset($datos["usuario_id"])){$this->titulo = $datos["usuario_id"];};
+        if(isset($datos["comentario"])){$this->descripcion = $datos["comentario"];};
         if(isset($datos["createdAt"])){$this->createdAt = $datos["createdAt"];};
 
         $headers = apache_request_headers();

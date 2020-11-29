@@ -22,6 +22,7 @@ class PostController extends Connection{
         if(!isset($data) || $data == 0){
             return $_respuesta->error_200("no hay datos registrados");
         }
+
         
         return $data;
 

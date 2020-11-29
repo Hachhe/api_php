@@ -2,12 +2,13 @@
 require_once 'class/connection/connection.php';
 require_once 'class/respuestas.php';
 require_once 'utils/encript.php';
-require_once 'auth.clases.php';
+require_once 'auth.clase.php';
 
 // MODELO POST- CRUD
 
 class UsuarioModel extends Connection {
     private $table = "usuarios";
+    private $roles = "roles";
     
         private $id="";
         private $nombre="";
@@ -30,8 +31,11 @@ class UsuarioModel extends Connection {
         if(isset($headers['token'])){
            $token = $headers['token'];
              if(Auth::Check($token)){
-            $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
+            $query= "
+            SELECT * from " . $this->table. " JOIN ". $this->roles. " ON ".
+            $this->table.".rol_id = ". $this->roles.".id limit $inicio, $cantidad";
             $data = $conexion->obtenerDatos($query);
+            print_r($query);
             return (isset($data[0])) ? $data : 0;
             }else
              return 0;
@@ -47,9 +51,12 @@ class UsuarioModel extends Connection {
         if(isset($headers['token'])){
            $token = $headers['token'];
              if(Auth::Check($token)){
-                $query = "SELECT * from " . $this->table. " WHERE id='$id'";
+                $query = "SELECT * from " . $this->table. " JOIN ". $this->roles. " ON ".
+                $this->table.".rol_id = ". $this->roles.".id WHERE ". $this->table.".id='$id'";
                 $data = $conexion->obtenerDatos($query);
+                print_r($query);
                 return (isset($data[0])) ? $data : 0;
+
             }else
              return 0;
        }else{
@@ -64,7 +71,7 @@ class UsuarioModel extends Connection {
         $this->apellido=$datos["apellido"];
         $this->email=$datos["email"];
         if(isset($datos["mobile"])){$this->mobile = $datos["mobile"];};
-        $this->password=encriptar($datos["password"]);
+        $this->password=($datos["password"]);
         $this->rol_id=$datos["rol_id"];
 
       $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, created_At) 
