@@ -32,8 +32,8 @@ class UsuarioModel extends Connection {
            $token = $headers['token'];
              if(Auth::Check($token)){
             $query= "
-            SELECT * from " . $this->table. " JOIN ". $this->roles. " ON ".
-            $this->table.".rol_id = ". $this->roles.".id limit $inicio, $cantidad";
+            SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
+            from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id limit $inicio, $cantidad";
             $data = $conexion->obtenerDatos($query);
             print_r($query);
             return (isset($data[0])) ? $data : 0;
@@ -51,8 +51,8 @@ class UsuarioModel extends Connection {
         if(isset($headers['token'])){
            $token = $headers['token'];
              if(Auth::Check($token)){
-                $query = "SELECT * from " . $this->table. " JOIN ". $this->roles. " ON ".
-                $this->table.".rol_id = ". $this->roles.".id WHERE ". $this->table.".id='$id'";
+                $query = "SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
+                from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id WHERE u.id='$id'";
                 $data = $conexion->obtenerDatos($query);
                 print_r($query);
                 return (isset($data[0])) ? $data : 0;

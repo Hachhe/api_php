@@ -8,6 +8,7 @@ require_once 'auth.clase.php';
 class ComentarioModel extends Connection {
     private $table = "comentarios";
     private $usuarios = "usuarios";
+    private $roles = "roles";
     
         private $id="";
         private $post_id="";
@@ -28,9 +29,12 @@ class ComentarioModel extends Connection {
           $token = $headers['token'];
             if(Auth::Check($token)){
                 $query = 
-                "SELECT * from " . $this->table."
-                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
-                 limit $inicio, $cantidad";
+                "SELECT c.id, c.post_id, c.usuario_id, c.comentario, c.createdAt,
+                u.nombre, u.email, r.rol 
+                from " . $this->table." as c 
+                JOIN ".$this->usuarios." as u ON c.usuario_id= u.id 
+                JOIN ".$this->roles." as r ON u.rol_id = r.id
+                limit $inicio, $cantidad";
                 $data = $conexion->obtenerDatos($query);
                 print_r($query);
                 return (isset($data[0])) ? $data : 0;
@@ -48,9 +52,12 @@ class ComentarioModel extends Connection {
             $token = $headers['token'];
               if(Auth::Check($token)){
                 $query= 
-                "SELECT * from " . $this->table."
-                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id".
-                " WHERE ". $this->table.".id='$id'";
+                "SELECT c.id, c.post_id, c.usuario_id, c.comentario, c.createdAt,
+                u.nombre, u.email, r.rol 
+                from " . $this->table." as c 
+                JOIN ".$this->usuarios." as u ON c.usuario_id= u.id 
+                JOIN ".$this->roles." as r ON u.rol_id = r.id
+                WHERE c.id='$id'";
                 $data = $conexion->obtenerDatos($query);
                 print_r($query);
                 return (isset($data[0])) ? $data : 0;

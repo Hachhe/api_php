@@ -32,12 +32,14 @@ class PostModel extends Connection {
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-             $query = "
-             SELECT * from " . $this->table."
-             JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
-             JOIN ".$this->categorias." ON ". $this->table.".categoria_id=". $this->categorias.".id
+             $query = " SELECT p.id, p.usuario_id, p.titulo, p.descripcion, p.createdAt,
+             u.nombre, u.email, u.created_At,
+             c.categoria from " . $this->table."
+             as p JOIN ".$this->usuarios."  as u ON p.usuario_id = u.id JOIN ".$this->categorias." as c ON p.categoria_id= c.id
             limit $inicio, $cantidad";
+            print_r($query);
              $data = $conexion->obtenerDatos($query);
+
             return (isset($data[0])) ? $data : 0;
             }else
                 return 0;
@@ -53,14 +55,13 @@ class PostModel extends Connection {
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-                $query = "
-                SELECT * from " . $this->table."
-                JOIN ".$this->usuarios." ON ". $this->table.".usuario_id=". $this->usuarios.".id"."
-                JOIN ".$this->categorias." ON ". $this->table.".categoria_id=". $this->categorias.".id
-                WHERE ". $this->table.".id='$id'";
+                $query = "SELECT p.id, p.usuario_id, p.titulo, p.descripcion, p.createdAt,
+                u.nombre, u.email, c.categoria from " . $this->table." as p 
+                JOIN ".$this->usuarios." as u ON p.usuario_id = u.id
+                JOIN ".$this->categorias." as c ON p.categoria_id = c.id
+                WHERE p.id='$id'";
                 print_r($query);
                 $data = $conexion->obtenerDatos($query);
-                $data[0]["id"] = $id;
                 return (isset($data[0])) ? $data : 0;
             }else
                 return 0;
