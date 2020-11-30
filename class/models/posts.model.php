@@ -41,6 +41,7 @@ class PostModel extends Connection {
     }
 
     public function getById($id){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         $headers = apache_request_headers();
         
@@ -63,6 +64,7 @@ class PostModel extends Connection {
     }
 
     public function Enviar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         
             $this->usuario_id = $datos["usuario_id"];
@@ -98,6 +100,7 @@ class PostModel extends Connection {
     }
 
     public function Actualizar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         $headers = apache_request_headers();
         $this->id = $datos["id"];
@@ -122,6 +125,7 @@ class PostModel extends Connection {
     }
 
     public function Eliminar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;    
         if(isset($headers['token'])){
             $token = $headers['token'];
