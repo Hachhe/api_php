@@ -9,7 +9,6 @@ class RolModel extends Connection {
     
         private $id="";
         private $rol="";
-        // no sé como iniciarlo private $createdAt="";
     
 
         function __construct(){
@@ -25,6 +24,7 @@ class RolModel extends Connection {
     }
 
     public function getById($id){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         $query = "SELECT * from " . $this->table. " WHERE id='$id'";
         $data = $conexion->obtenerDatos($query);
@@ -32,6 +32,7 @@ class RolModel extends Connection {
     }
 
     public function Enviar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;
             $this->rol = $datos["rol"];
         $query = "INSERT INTO " . $this->table . "(rol) values('".$this->rol."')";
@@ -40,10 +41,13 @@ class RolModel extends Connection {
     }
 
     public function Actualizar($datos){
-        $conexion = new connection;
         
+        $_respuesta = new respuestas;
+        $conexion = new connection;
+        $obtener = $this->getById($datos["id"]); 
         $this->id = $datos["id"];
-        if(isset($datos["rol"])){$this->rol = $datos["rol"];};
+        if(isset($datos["rol"])){$this->rol = $datos["rol"];}
+        else{$this->rol = $obtener["rol"];};
     
     $query = "UPDATE " . $this->table . " SET rol='".$this->rol."' WHERE id='".$this->id."'";
     $data=$conexion->nonQuery($query);
@@ -51,10 +55,10 @@ class RolModel extends Connection {
     }
 
     public function Eliminar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;    
         $this->id = $datos["id"];
     $query = "DELETE FROM " . $this->table . " WHERE id='".$this->id."'";
-    print_r($query);
     $data=$conexion->nonQuery($query);
     return (($data>=1) ?  $data :  0); 
     

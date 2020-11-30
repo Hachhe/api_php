@@ -89,7 +89,6 @@ class PostModel extends Connection {
                     $this->categoria_id."','".
                     $this->createdAt."')";
                     $data=$conexion->nonQueryId($query);
-                    print_r($query);
                     return (($data) ?  $data :  0);
                 }else
                     return 0;

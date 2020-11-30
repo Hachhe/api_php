@@ -37,6 +37,7 @@ class ComentarioModel extends Connection {
     }
 
     public function getById($id){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         $headers = apache_request_headers();
         if(isset($headers['token'])){
@@ -59,6 +60,7 @@ class ComentarioModel extends Connection {
     }
 
     public function Enviar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;
         
             $this->post_id = $datos["post_id"];
@@ -87,20 +89,26 @@ class ComentarioModel extends Connection {
     }
 
     public function Actualizar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;
+        $obtener = $this->getById($datos["id"]);
         
         $this->id = $datos["id"];
-        if(isset($datos["post_id"])){$this->post_id = $datos["post_id"];};
-        if(isset($datos["usuario_id"])){$this->titulo = $datos["usuario_id"];};
-        if(isset($datos["comentario"])){$this->descripcion = $datos["comentario"];};
-        if(isset($datos["createdAt"])){$this->createdAt = $datos["createdAt"];};
+        if(isset($datos["post_id"])){$this->post_id = $datos["post_id"];}
+        else{$this->post_id = $obtener["post_id"];};
+
+        if(isset($datos["usuario_id"])){$this->usuario_id = $datos["usuario_id"];}
+        else{$this->usuario_id = $obtener["usuario_id"];};
+
+        if(isset($datos["comentario"])){$this->comentario = $datos["comentario"];}
+        else{$this->comentario = $obtener["comentario"];};
 
         $headers = apache_request_headers();
 
          if(isset($headers['token'])){
             $token = $headers['token'];
               if(Auth::Check($token)){
-                $query = "UPDATE " . $this->table . " SET post_id='".$this->post_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', createdAt='".$this->createdAt."' WHERE id='".$this->id."'";
+                $query = "UPDATE " . $this->table . " SET post_id='".$this->post_id."', usuario_id='".$this->usuario_id."', comentario='".$this->comentario."', createdAt='".$this->createdAt."' WHERE id='".$this->id."'";
                 $data=$conexion->nonQuery($query);
                 return (($data>=1) ?  $data :  0);       
             }else
@@ -111,6 +119,7 @@ class ComentarioModel extends Connection {
     }
 
     public function Eliminar($datos){
+        $_respuesta = new respuestas;
         $conexion = new connection;    
         $this->id = $datos["id"];
         $headers = apache_request_headers();
