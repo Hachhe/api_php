@@ -10,6 +10,7 @@ class PostModel extends Connection {
     private $table = "posts";
     private $categorias = "categorias";
     private $usuarios = "usuarios";
+    private $comentarios = "comentarios";
     
         private $id="";
         private $usuario_id="";
@@ -29,11 +30,17 @@ class PostModel extends Connection {
         $_respuesta = new respuestas;
         $conexion = new connection;
         $offset = ($cantidad * $pagina)-$cantidad;
-       $query = " SELECT p.id, p.usuario_id, p.titulo, p.descripcion, p.fuente, p.createdAt,
-       u.nombre, u.email, u.createdAt,
-       c.categoria from " . $this->table."
-       as p JOIN ".$this->usuarios."  as u ON p.usuario_id = u.id JOIN ".$this->categorias." as c ON p.categoria_id= c.id
-       limit $cantidad offset $offset";
+
+    $query = "SELECT p.*, 
+    u.nombre, u.email, u.createdAt, 
+    categ.categoria, 
+    Count(c.id) as comentarios FROM " . $this->table . " as p 
+    LEFT JOIN " . $this->comentarios . " as c ON (p.id=c.post_id) 
+    JOIN " . $this->usuarios . " as u ON (p.usuario_id = u.id) 
+    JOIN " . $this->categorias . " as categ ON (p.categoria_id = categ.id) 
+    GROUP BY p.id ORDER BY p.id DESC limit $cantidad offset $offset;
+    ";
+
        $data = $conexion->obtenerDatos($query);
 
     return (isset($data[0])) ? $data : 0;
@@ -44,14 +51,16 @@ class PostModel extends Connection {
         $_respuesta = new respuestas;
         $conexion = new connection;
         $headers = apache_request_headers();
-        
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-                $query = "SELECT p.id, p.usuario_id, p.titulo, p.descripcion, p.fuente, p.createdAt,p.categoria_id, p.estado,
-                u.nombre, u.email, c.categoria from " . $this->table." as p 
-                JOIN ".$this->usuarios." as u ON p.usuario_id = u.id
-                JOIN ".$this->categorias." as c ON p.categoria_id = c.id
+                $query = "SELECT p.*, 
+                u.nombre, u.email, u.createdAt, 
+                categ.categoria, 
+                Count(c.id) as comentarios FROM " . $this->table . " as p 
+                LEFT JOIN " . $this->comentarios . " as c ON (p.id=c.post_id) 
+                JOIN " . $this->usuarios . " as u ON (p.usuario_id = u.id) 
+                JOIN " . $this->categorias . " as categ ON (p.categoria_id = categ.id) 
                 WHERE p.id='$id'";
                 $data = $conexion->obtenerDatos($query);
                 return (isset($data[0])) ? $data[0] : 0;
