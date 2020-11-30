@@ -17,11 +17,11 @@ class UsuarioModel extends Connection {
         private $mobile="";
         private $password="";
         private $rol_id="";
-        private $created_At="";
+        private $createdAt="";
     
 
         function __construct(){
-            $this->created_At=date("Y-m-d H:i:s");
+            $this->createdAt=date("Y-m-d H:i:s");
         }
 
       public function getAll($pagina, $cantidad){
@@ -29,7 +29,7 @@ class UsuarioModel extends Connection {
           $conexion = new connection;
           $offset = ($cantidad * $pagina)-$cantidad;
             $query= "
-            SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
+            SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.createdAt, r.rol
             from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id limit $cantidad offset $offset";
             $data = $conexion->obtenerDatos($query);
             return (isset($data[0])) ? $data : 0;
@@ -42,7 +42,7 @@ class UsuarioModel extends Connection {
         if(isset($headers['token'])){
            $token = $headers['token'];
              if(Auth::Check($token)){
-                $query = "SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
+                $query = "SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.createdAt, r.rol
                 from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id WHERE u.id='$id'";
                 $data = $conexion->obtenerDatos($query);
                 return (isset($data[0])) ? $data[0] : 0;
@@ -64,7 +64,7 @@ class UsuarioModel extends Connection {
         $this->password=($datos["password"]);
         $this->rol_id=$datos["rol_id"];
 
-      $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, created_At) 
+      $query = "INSERT INTO " . $this->table . "(nombre, apellido, email, mobile, password, rol_id, createdAt) 
       values
       ('".$this->nombre."','".
          $this->apellido."','".
@@ -72,7 +72,7 @@ class UsuarioModel extends Connection {
          $this->mobile."','".
          $this->password."','".
          $this->rol_id."','".
-         $this->created_At."')";
+         $this->createdAt."')";
          $data=$conexion->nonQueryId($query);
          print_r($query);
 
@@ -94,7 +94,7 @@ class UsuarioModel extends Connection {
         if(isset($headers['token'])){
            $token = $headers['token'];
              if(Auth::Check($token)){
-                $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
+                $query = "UPDATE " . $this->table . " SET nombre='".$this->nombre."', apellido='".$this->apellido."', email='".$this->email."', mobile='".$this->mobile."', password='".$this->password."', rol_id='".$this->rol_id."', createdAt='".$this->createdAt.'" WHERE id="'.$this->id."'";
                 $data=$conexion->nonQuery($query);
                 return (($data>=1) ?  $data :  0);
             }else

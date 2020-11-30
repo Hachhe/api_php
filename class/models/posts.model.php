@@ -18,11 +18,11 @@ class PostModel extends Connection {
         private $estado="";
         private $fuente="";
         private $categoria_id="";
-        private $created_At="";
+        private $createdAt="";
     
 
         function __construct(){
-            $this->created_At=date("Y-m-d H:i:s");
+            $this->createdAt=date("Y-m-d H:i:s");
         }
 
     public function getAll($pagina, $cantidad){
@@ -30,7 +30,7 @@ class PostModel extends Connection {
         $conexion = new connection;
         $offset = ($cantidad * $pagina)-$cantidad;
        $query = " SELECT p.id, p.usuario_id, p.titulo, p.descripcion, p.fuente, p.createdAt,
-       u.nombre, u.email, u.created_At,
+       u.nombre, u.email, u.createdAt,
        c.categoria from " . $this->table."
        as p JOIN ".$this->usuarios."  as u ON p.usuario_id = u.id JOIN ".$this->categorias." as c ON p.categoria_id= c.id
        limit $cantidad offset $offset";
@@ -79,7 +79,7 @@ class PostModel extends Connection {
             if(isset($headers['token'])){
               $token = $headers['token'];
                 if(Auth::Check($token)){
-                    $query = "INSERT INTO " . $this->table . "(usuario_id,titulo, descripcion, estado,categoria_id, created_At) 
+                    $query = "INSERT INTO " . $this->table . "(usuario_id,titulo, descripcion, estado, fuente, categoria_id, createdAt) 
                     values
                     ('".$this->usuario_id."','".
                     $this->titulo."','".
@@ -87,8 +87,9 @@ class PostModel extends Connection {
                     $this->estado."','".
                     $this->fuente."','".
                     $this->categoria_id."','".
-                    $this->created_At."')";
+                    $this->createdAt."')";
                     $data=$conexion->nonQueryId($query);
+                    print_r($query);
                     return (($data) ?  $data :  0);
                 }else
                     return 0;
@@ -114,7 +115,8 @@ class PostModel extends Connection {
         if(isset($headers['token'])){
           $token = $headers['token'];
             if(Auth::Check($token)){
-             $query = "UPDATE " . $this->table . " SET usuario_id='".$this->usuario_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', categoria_id='".$this->categoria_id."', created_At='".$this->created_At.'" WHERE id="'.$this->id."'";
+             $query = "UPDATE " . $this->table . " SET usuario_id='".$this->usuario_id."', titulo='".$this->titulo."', descripcion='".$this->descripcion."', estado='".$this->estado."', categoria_id='".$this->categoria_id."', createdA
+             t='".$this->createdAt.'" WHERE id="'.$this->id."'";
             $data=$conexion->nonQuery($query);
             return (($data>=1) ?  $data :  0); 
             }else

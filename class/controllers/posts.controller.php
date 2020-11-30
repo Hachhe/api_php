@@ -36,6 +36,7 @@ class PostController extends Connection{
         !isset($datos["titulo"])||
         !isset($datos["descripcion"])||
         !isset($datos["estado"])||
+        !isset($datos["fuente"])||
         !isset($datos["categoria_id"])){
             return $_respuesta->error_400();
         }else{
