@@ -11,9 +11,10 @@ $_categorias = new CategoriasController;
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //get por paginas
     if(isset($_GET["page"])){
+        $limit= isset($_GET["limit"]) ? $_GET["limit"] : 10;
         $pagina = $_GET["page"];
         header('Content-Type: application/json');    
-        $lista_categorias = $_categorias->getAll($pagina);
+        $lista_categorias = $_categorias->getAll($pagina,$limit);
         echo json_encode($lista_categorias);
         http_response_code(200);
 

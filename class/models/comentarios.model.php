@@ -21,28 +21,19 @@ class ComentarioModel extends Connection {
             $this->createdAt=date("Y-m-d H:i");
         }
 
-    public function getAll($inicio, $cantidad){
+    public function getAll($pagina, $cantidad){
+        $_respuesta = new respuestas;
         $conexion = new connection;
-        $headers = apache_request_headers();
-
-        if(isset($headers['token'])){
-          $token = $headers['token'];
-            if(Auth::Check($token)){
-                $query = 
-                "SELECT c.id, c.post_id, c.usuario_id, c.comentario, c.createdAt,
-                u.nombre, u.email, r.rol 
-                from " . $this->table." as c 
-                JOIN ".$this->usuarios." as u ON c.usuario_id= u.id 
-                JOIN ".$this->roles." as r ON u.rol_id = r.id
-                limit $inicio, $cantidad";
-                $data = $conexion->obtenerDatos($query);
-                print_r($query);
-                return (isset($data[0])) ? $data : 0;
-            }else
-                return 0;
-        }else{
-            return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
-        }
+        $offset = ($cantidad * $pagina)-$cantidad;
+        $query = 
+        "SELECT c.id, c.post_id, c.usuario_id, c.comentario, c.createdAt,
+        u.nombre, u.email, r.rol 
+        from " . $this->table." as c 
+        JOIN ".$this->usuarios." as u ON c.usuario_id= u.id 
+        JOIN ".$this->roles." as r ON u.rol_id = r.id
+        limit $cantidad offset $offset";
+        $data = $conexion->obtenerDatos($query);
+        return (isset($data[0])) ? $data : 0;
     }
 
     public function getById($id){
@@ -59,8 +50,7 @@ class ComentarioModel extends Connection {
                 JOIN ".$this->roles." as r ON u.rol_id = r.id
                 WHERE c.id='$id'";
                 $data = $conexion->obtenerDatos($query);
-                print_r($query);
-                return (isset($data[0])) ? $data : 0;
+                return (isset($data[0])) ? $data[0] : 0;
               }else
                   return 0;
           }else{
@@ -129,7 +119,6 @@ class ComentarioModel extends Connection {
            $token = $headers['token'];
              if(Auth::Check($token)){
                 $query = "DELETE FROM " . $this->table . " WHERE id='".$this->id."'";
-                print_r($query);
                 $data=$conexion->nonQuery($query);
                 return (($data>=1) ?  $data :  0); 
             }else

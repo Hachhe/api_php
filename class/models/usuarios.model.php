@@ -24,24 +24,15 @@ class UsuarioModel extends Connection {
             $this->created_At=date("Y-m-d H:i:s");
         }
 
-    public function getAll($inicio, $cantidad){
-        $conexion = new connection;
-        $headers = apache_request_headers();
-
-        if(isset($headers['token'])){
-           $token = $headers['token'];
-             if(Auth::Check($token)){
+      public function getAll($pagina, $cantidad){
+          $_respuesta = new respuestas;
+          $conexion = new connection;
+          $offset = ($cantidad * $pagina)-$cantidad;
             $query= "
             SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
-            from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id limit $inicio, $cantidad";
+            from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id limit $cantidad offset $offset";
             $data = $conexion->obtenerDatos($query);
-            print_r($query);
             return (isset($data[0])) ? $data : 0;
-            }else
-             return 0;
-       }else{
-         return $_respuesta->error_200("Error en configuación del token. Contacte al Administrador");
-       }
     }
 
     public function getById($id){
@@ -54,8 +45,7 @@ class UsuarioModel extends Connection {
                 $query = "SELECT u.id, u.nombre, u.apellido, u.email, u.mobile, u.rol_id, u.created_At, r.rol
                 from " . $this->table. " as u JOIN ". $this->roles. " as r ON u.rol_id = r.id WHERE u.id='$id'";
                 $data = $conexion->obtenerDatos($query);
-                print_r($query);
-                return (isset($data[0])) ? $data : 0;
+                return (isset($data[0])) ? $data[0] : 0;
 
             }else
              return 0;

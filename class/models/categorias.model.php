@@ -13,10 +13,11 @@ class CategoriaModel extends Connection {
 
         function __construct(){
         }
-
-    public function getAll($inicio, $cantidad){
+    public function getAll($pagina, $cantidad){
+        $_respuesta = new respuestas;
         $conexion = new connection;
-        $query = "SELECT * from " . $this->table. " limit $inicio, $cantidad";
+        $offset = ($cantidad * $pagina)-$cantidad;
+        $query = "SELECT * from " . $this->table. " limit $cantidad offset $offset";
         $data = $conexion->obtenerDatos($query);
         return (isset($data[0])) ? $data : 0;
     }
@@ -25,7 +26,7 @@ class CategoriaModel extends Connection {
         $conexion = new connection;
         $query = "SELECT * from " . $this->table. " WHERE id='$id'";
         $data = $conexion->obtenerDatos($query);
-        return (isset($data[0])) ? $data : 0;
+        return (isset($data[0])) ? $data[0] : 0;
     }
 
     public function Enviar($datos){

@@ -6,24 +6,14 @@ require_once './class/models/posts.model.php';
 
 class PostController extends Connection{
 
-    public function getAll($pagina = 1){
+    public function getAll($pagina=1, $cantidad=10){
         $_respuesta = new respuestas;
-        $inicio = 0;
-        $cantidad = 10;
-        if($pagina>1){
-            $inicio = ($cantidad * ($pagina-1))+1;
-            $cantidad = $cantidad * $pagina;
-        }
-
         $_PostModel = new PostModel;
-
-        $data = $_PostModel->getAll($inicio,$cantidad);
+        $data = $_PostModel->getAll($pagina,$cantidad);
 
         if(!isset($data) || $data == 0){
-            return $_respuesta->error_200("no hay datos registrados");
-        }
-
-        
+            return $data = [];
+        }        
         return $data;
 
     }

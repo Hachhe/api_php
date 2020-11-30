@@ -11,9 +11,10 @@ $_roles = new RolesController;
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //get por paginas
     if(isset($_GET["page"])){
+        $limit= isset($_GET["limit"]) ? $_GET["limit"] : 10;
         $pagina = $_GET["page"];
         header('Content-Type: application/json');    
-        $lista_roles = $_roles->getAll($pagina);
+        $lista_roles = $_roles->getAll($pagina,$limit);
         echo json_encode($lista_roles);
         http_response_code(200);
 

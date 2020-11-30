@@ -11,9 +11,10 @@ $_usuarios = new UsuariosController;
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //get por paginas
     if(isset($_GET["page"])){
+        $limit= isset($_GET["limit"]) ? $_GET["limit"] : 10;
         $pagina = $_GET["page"];
         header('Content-Type: application/json');    
-        $listarUsuarios = $_usuarios->getAll($pagina);
+        $listarUsuarios = $_usuarios->getAll($pagina, $limit);
         echo json_encode($listarUsuarios);
         http_response_code(200);
 

@@ -11,9 +11,10 @@ $_comentarios = new ComentariosController;
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //get por paginas
     if(isset($_GET["page"])){
+        $limit= isset($_GET["limit"]) ? $_GET["limit"] : 10;
         $pagina = $_GET["page"];
         header('Content-Type: application/json');    
-        $listarComentarios = $_comentarios->getAll($pagina);
+        $listarComentarios = $_comentarios->getAll($pagina,$limit);
         echo json_encode($listarComentarios);
         http_response_code(200);
 

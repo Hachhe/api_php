@@ -11,9 +11,10 @@ $_post = new PostController;
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     //get por paginas
     if(isset($_GET["page"])){
+        $limit= isset($_GET["limit"]) ? $_GET["limit"] : 10;
         $pagina = $_GET["page"];
         header('Content-Type: application/json');    
-        $lista_posts = $_post->getAll($pagina);
+        $lista_posts = $_post->getAll($pagina,$limit);
         echo json_encode($lista_posts);
         http_response_code(200);
 
