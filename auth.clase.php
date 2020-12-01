@@ -18,7 +18,7 @@ class Auth
         $timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
 
         $token = array(
-            'exp' => $time + (60*60),
+            'exp' => $time + (60*180),
             'aud' => self::Aud(),
             'data' => $data
         );
